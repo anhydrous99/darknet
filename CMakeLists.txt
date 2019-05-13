@@ -4,7 +4,7 @@ project(darknet)
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
-option(USE_OpenCV "Enable OpenCV" OFF)
+option(USE_OpenCV "Enable OpenCV" ON)
 option(USE_OpenMP "Enable OpenMP" ON)
 option(BUILD_STATIC "Build static library" ON)
 option(BUILD_SHARED "Build shared library" ON)
