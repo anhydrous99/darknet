@@ -4,7 +4,7 @@ project(darknet)
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
-option(USE_OpenCV "Enable OpenCV" ON)
+option(USE_OpenCV "Enable OpenCV" OFF)
 option(USE_OpenMP "Enable OpenMP" ON)
 option(BUILD_STATIC "Build static library" ON)
 option(BUILD_SHARED "Build shared library" ON)
@@ -16,7 +16,6 @@ if (CMAKE_CUDA_COMPILER)
     option(USE_CUDNN "Enable CUDNN" ON)
     if (USE_CUDA)
         enable_language(CUDA)
-        set_target_properties(darknet PROPERTIES CUDA_SEPERABLE_COMPILATION ON)
         add_compile_definitions(GPU)
         if (USE_CUDNN)
             add_compile_definitions(CUDNN)
@@ -55,6 +54,14 @@ if (USE_CUDA)
     set(SOURCES ${SOURCES} src/convolutional_kernels.cu src/deconvolutional_kernels.cu src/activation_kernels.cu
             src/im2col_kernels.cu src/col2im_kernels.cu src/blas_kernels.cu src/crop_layer_kernels.cu
             src/dropout_layer_kernels.cu src/maxpool_layer_kernels.cu src/avgpool_layer_kernels.cu)
+    include_directories(${CMAKE_CUDA_TOOLKIT_INCLUDE_DIRECTORIES})
+
+    if (USE_CUDNN)
+        find_library(CUDNN_LIB NAMES cudnn PATHS ${CMAKE_CUDA_IMPLICIT_LINK_DIRECTORIES})
+    endif ()
+    find_library(CUBLAS_LIB NAMES cublas PATHS ${CMAKE_CUDA_IMPLICIT_LINK_DIRECTORIES})
+    find_library(CURAND_LIB NAME curand PATHS ${CMAKE_CUDA_IMPLICIT_LINK_DIRECTORIES})
+    set(CUDA_LIBS ${CUBLAS_LIB} ${CURAND_LIB} ${CUDNN_LIB})
 endif ()
 
 include_directories(include src ${OpenCV_INCLUDE_DIRS})
@@ -63,6 +70,13 @@ add_library(obj_darknet OBJECT ${SOURCES})
 
 add_executable(darknet $<TARGET_OBJECTS:obj_darknet> ${SOURCES_EXEC})
 target_link_libraries(darknet ${CMAKE_THREAD_LIBS_INIT} ${OpenCV_LIBRARIES})
+
+if (USE_CUDA)
+    set_target_properties(obj_darknet PROPERTIES
+            CUDA_SEPERABLE_COMPILATION ON
+            POSITION_INDEPENDENT_CODE ON)
+    target_link_libraries(darknet ${CUDA_LIBS})
+endif ()
 
 if (BUILD_STATIC)
     add_library(static_darknet STATIC $<TARGET_OBJECTS:obj_darknet>)
