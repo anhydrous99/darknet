@@ -80,13 +80,13 @@ void resize_yolo_layer(layer *l, int w, int h)
 #endif
 }
 
-box get_yolo_box(float *x, float *biases, int n, int index, int i, int j, int lw, int lh, int w, int h, int stride)
+box get_yolo_box(float *x, const float *biases, int n, int index, int i, int j, int lw, int lh, int w, int h, int stride)
 {
     box b;
     b.x = (i + x[index + 0*stride]) / lw;
     b.y = (j + x[index + 1*stride]) / lh;
-    b.w = exp(x[index + 2*stride]) * biases[2*n]   / w;
-    b.h = exp(x[index + 3*stride]) * biases[2*n+1] / h;
+    b.w = expf(x[index + 2*stride]) * biases[2*n]   / w;
+    b.h = expf(x[index + 3*stride]) * biases[2*n+1] / h;
     return b;
 }
 
@@ -97,8 +97,8 @@ float delta_yolo_box(box truth, float *x, float *biases, int n, int index, int i
 
     float tx = (truth.x*lw - i);
     float ty = (truth.y*lh - j);
-    float tw = log(truth.w*w / biases[2*n]);
-    float th = log(truth.h*h / biases[2*n + 1]);
+    float tw = logf(truth.w*w / biases[2*n]);
+    float th = logf(truth.h*h / biases[2*n + 1]);
 
     delta[index + 0*stride] = scale * (tx - x[index + 0*stride]);
     delta[index + 1*stride] = scale * (ty - x[index + 1*stride]);
@@ -108,7 +108,7 @@ float delta_yolo_box(box truth, float *x, float *biases, int n, int index, int i
 }
 
 
-void delta_yolo_class(float *output, float *delta, int index, int class, int classes, int stride, float *avg_cat)
+void delta_yolo_class(const float *output, float *delta, int index, int class, int classes, int stride, float *avg_cat)
 {
     int n;
     if (delta[index]){

@@ -172,8 +172,8 @@ void forward_detection_layer(const detection_layer l, network net)
                 l.delta[box_index+2] = l.coord_scale*(net.truth[tbox_index + 2] - l.output[box_index + 2]);
                 l.delta[box_index+3] = l.coord_scale*(net.truth[tbox_index + 3] - l.output[box_index + 3]);
                 if(l.sqrt){
-                    l.delta[box_index+2] = l.coord_scale*(sqrt(net.truth[tbox_index + 2]) - l.output[box_index + 2]);
-                    l.delta[box_index+3] = l.coord_scale*(sqrt(net.truth[tbox_index + 3]) - l.output[box_index + 3]);
+                    l.delta[box_index+2] = l.coord_scale*(sqrtf(net.truth[tbox_index + 2]) - l.output[box_index + 2]);
+                    l.delta[box_index+3] = l.coord_scale*(sqrtf(net.truth[tbox_index + 3]) - l.output[box_index + 3]);
                 }
 
                 *(l.cost) += pow(1-iou, 2);

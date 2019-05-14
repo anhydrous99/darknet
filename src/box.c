@@ -88,7 +88,7 @@ void do_nms_sort(detection *dets, int total, int classes, float thresh)
     }
 }
 
-box float_to_box(float *f, int stride)
+box float_to_box(const float *f, int stride)
 {
     box b = {0};
     b.x = f[0];
@@ -300,7 +300,7 @@ dbox diou(box a, box b)
     dbox du = dunion(a,b);
     dbox dd = {0,0,0,0};
 
-    if(i <= 0 || 1) {
+    if(i <= 0) {
         dd.dx = b.x - a.x;
         dd.dy = b.y - a.y;
         dd.dw = b.w - a.w;
@@ -341,8 +341,8 @@ box encode_box(box b, box anchor)
     box encode;
     encode.x = (b.x - anchor.x) / anchor.w;
     encode.y = (b.y - anchor.y) / anchor.h;
-    encode.w = log2(b.w / anchor.w);
-    encode.h = log2(b.h / anchor.h);
+    encode.w = log2f(b.w / anchor.w);
+    encode.h = log2f(b.h / anchor.h);
     return encode;
 }
 

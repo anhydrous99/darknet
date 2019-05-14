@@ -73,13 +73,13 @@ void resize_region_layer(layer *l, int w, int h)
 #endif
 }
 
-box get_region_box(float *x, float *biases, int n, int index, int i, int j, int w, int h, int stride)
+box get_region_box(float *x, const float *biases, int n, int index, int i, int j, int w, int h, int stride)
 {
     box b;
     b.x = (i + x[index + 0*stride]) / w;
     b.y = (j + x[index + 1*stride]) / h;
-    b.w = exp(x[index + 2*stride]) * biases[2*n]   / w;
-    b.h = exp(x[index + 3*stride]) * biases[2*n+1] / h;
+    b.w = expf(x[index + 2*stride]) * biases[2*n]   / w;
+    b.h = expf(x[index + 3*stride]) * biases[2*n+1] / h;
     return b;
 }
 
@@ -90,8 +90,8 @@ float delta_region_box(box truth, float *x, float *biases, int n, int index, int
 
     float tx = (truth.x*w - i);
     float ty = (truth.y*h - j);
-    float tw = log(truth.w*w / biases[2*n]);
-    float th = log(truth.h*h / biases[2*n + 1]);
+    float tw = logf(truth.w*w / biases[2*n]);
+    float th = logf(truth.h*h / biases[2*n + 1]);
 
     delta[index + 0*stride] = scale * (tx - x[index + 0*stride]);
     delta[index + 1*stride] = scale * (ty - x[index + 1*stride]);
@@ -100,7 +100,7 @@ float delta_region_box(box truth, float *x, float *biases, int n, int index, int
     return iou;
 }
 
-void delta_region_mask(float *truth, float *x, int n, int index, float *delta, int stride, int scale)
+void delta_region_mask(const float *truth, const float *x, int n, int index, float *delta, int stride, int scale)
 {
     int i;
     for(i = 0; i < n; ++i){
@@ -109,7 +109,7 @@ void delta_region_mask(float *truth, float *x, int n, int index, float *delta, i
 }
 
 
-void delta_region_class(float *output, float *delta, int index, int class, int classes, tree *hier, float scale, int stride, float *avg_cat, int tag)
+void delta_region_class(const float *output, float *delta, int index, int class, int classes, tree *hier, float scale, int stride, float *avg_cat, int tag)
 {
     int i, n;
     if(hier){

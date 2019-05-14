@@ -22,7 +22,7 @@ void bilinear_init(layer l)
     for(f = 0; f < l.n; ++f){
         for(j = 0; j < l.size; ++j){
             for(i = 0; i < l.size; ++i){
-                float val = (1 - fabs(i - center)) * (1 - fabs(j - center));
+                float val = (1 - fabsf(i - center)) * (1 - fabsf(j - center));
                 int c = f%l.c;
                 int ind = f*l.size*l.size*l.c + c*l.size*l.size + j*l.size + i;
                 l.weights[ind] = val;

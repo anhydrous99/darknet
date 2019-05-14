@@ -607,20 +607,20 @@ list *read_cfg(char *filename);
 unsigned char *read_file(char *filename);
 data resize_data(data orig, int w, int h);
 data *tile_data(data orig, int divs, int size);
-data select_data(data *orig, int *inds);
+data select_data(data *orig, const int *inds);
 
 void forward_network(network *net);
 void backward_network(network *net);
 void update_network(network *net);
 
 
-float dot_cpu(int N, float *X, int INCX, float *Y, int INCY);
-void axpy_cpu(int N, float ALPHA, float *X, int INCX, float *Y, int INCY);
-void copy_cpu(int N, float *X, int INCX, float *Y, int INCY);
+float dot_cpu(int N, const float *X, int INCX, const float *Y, int INCY);
+void axpy_cpu(int N, float ALPHA, const float *X, int INCX, float *Y, int INCY);
+void copy_cpu(int N, const float *X, int INCX, float *Y, int INCY);
 void scal_cpu(int N, float ALPHA, float *X, int INCX);
 void fill_cpu(int N, float ALPHA, float * X, int INCX);
-void normalize_cpu(float *x, float *mean, float *variance, int batch, int filters, int spatial);
-void softmax(float *input, int n, float temp, int stride, float *output);
+void normalize_cpu(float *x, const float *mean, float *variance, int batch, int filters, int spatial);
+void softmax(const float *input, int n, float temp, int stride, float *output);
 
 int best_3d_shift_r(image a, image b, int min, int max);
 #ifdef GPU
@@ -731,7 +731,7 @@ void visualize_network(network *net);
 float box_iou(box a, box b);
 data load_all_cifar10();
 box_label *read_boxes(char *filename, int *n);
-box float_to_box(float *f, int stride);
+box float_to_box(const float *f, int stride);
 void draw_detections(image im, detection *dets, int num, float thresh, char **names, image **alphabet, int classes);
 
 matrix network_predict_data(network *net, data test);
@@ -779,20 +779,20 @@ char *fgetl(FILE *fp);
 void strip(char *s);
 float sec(clock_t clocks);
 void **list_to_array(list *l);
-void top_k(float *a, int n, int k, int *index);
+void top_k(const float *a, int n, int k, int *index);
 int *read_map(char *filename);
 void error(const char *s);
-int max_index(float *a, int n);
-int max_int_index(int *a, int n);
+int max_index(const float *a, int n);
+int max_int_index(const int *a, int n);
 int sample_array(float *a, int n);
 int *random_index_order(int min, int max);
 void free_list(list *l);
-float mse_array(float *a, int n);
+float mse_array(const float *a, int n);
 float variance_array(float *a, int n);
-float mag_array(float *a, int n);
+float mag_array(const float *a, int n);
 void scale_array(float *a, int n, float s);
 float mean_array(float *a, int n);
-float sum_array(float *a, int n);
+float sum_array(const float *a, int n);
 void normalize_array(float *a, int n);
 int *read_intlist(char *s, int *n, int d);
 size_t rand_size_t();

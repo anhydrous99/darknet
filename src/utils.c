@@ -234,7 +234,7 @@ float sec(clock_t clocks)
     return (float)clocks/CLOCKS_PER_SEC;
 }
 
-void top_k(float *a, int n, int k, int *index)
+void top_k(const float *a, int n, int k, int *index)
 {
     int i,j;
     for(j = 0; j < k; ++j) index[j] = -1;
@@ -476,7 +476,7 @@ float *parse_fields(char *line, int n)
     return field;
 }
 
-float sum_array(float *a, int n)
+float sum_array(const float *a, int n)
 {
     int i;
     float sum = 0;
@@ -540,27 +540,27 @@ float dist_array(float *a, float *b, int n, int sub)
     int i;
     float sum = 0;
     for(i = 0; i < n; i += sub) sum += pow(a[i]-b[i], 2);
-    return sqrt(sum);
+    return sqrtf(sum);
 }
 
-float mse_array(float *a, int n)
+float mse_array(const float *a, int n)
 {
     int i;
     float sum = 0;
     for(i = 0; i < n; ++i) sum += a[i]*a[i];
-    return sqrt(sum/n);
+    return sqrtf(sum/n);
 }
 
 void normalize_array(float *a, int n)
 {
     int i;
     float mu = mean_array(a,n);
-    float sigma = sqrt(variance_array(a,n));
+    float sigma = sqrtf(variance_array(a,n));
     for(i = 0; i < n; ++i){
         a[i] = (a[i] - mu)/sigma;
     }
     mu = mean_array(a,n);
-    sigma = sqrt(variance_array(a,n));
+    sigma = sqrtf(variance_array(a,n));
 }
 
 void translate_array(float *a, int n, float s)
@@ -571,14 +571,14 @@ void translate_array(float *a, int n, float s)
     }
 }
 
-float mag_array(float *a, int n)
+float mag_array(const float *a, int n)
 {
     int i;
     float sum = 0;
     for(i = 0; i < n; ++i){
         sum += a[i]*a[i];   
     }
-    return sqrt(sum);
+    return sqrtf(sum);
 }
 
 void scale_array(float *a, int n, float s)
@@ -602,7 +602,7 @@ int sample_array(float *a, int n)
     return n-1;
 }
 
-int max_int_index(int *a, int n)
+int max_int_index(const int *a, int n)
 {
     if(n <= 0) return -1;
     int i, max_i = 0;
@@ -616,7 +616,7 @@ int max_int_index(int *a, int n)
     return max_i;
 }
 
-int max_index(float *a, int n)
+int max_index(const float *a, int n)
 {
     if(n <= 0) return -1;
     int i, max_i = 0;
@@ -630,7 +630,7 @@ int max_index(float *a, int n)
     return max_i;
 }
 
-int int_index(int *a, int val, int n)
+int int_index(const int *a, int val, int n)
 {
     int i;
     for(i = 0; i < n; ++i){
@@ -708,7 +708,7 @@ float rand_uniform(float min, float max)
 float rand_scale(float s)
 {
     float scale = rand_uniform(1, s);
-    if(rand()%2) return scale;
+    if(rand()>(RAND_MAX/2)) return scale;
     return 1./scale;
 }
 

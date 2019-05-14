@@ -11,7 +11,7 @@ void col2im_add_pixel(float *im, int height, int width, int channels,
     im[col + width*(row + height*channel)] += val;
 }
 //This one might be too, can't remember.
-void col2im_cpu(float* data_col,
+void col2im_cpu(const float* data_col,
          int channels,  int height,  int width,
          int ksize,  int stride, int pad, float* data_im) 
 {

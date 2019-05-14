@@ -69,7 +69,7 @@ void forward_crop_layer(const crop_layer l, network net)
     int i,j,c,b,row,col;
     int index;
     int count = 0;
-    int flip = (l.flip && rand()%2);
+    int flip = (l.flip && rand()>(RAND_MAX/2));
     int dh = rand()%(l.h - l.out_h + 1);
     int dw = rand()%(l.w - l.out_w + 1);
     float scale = 2;

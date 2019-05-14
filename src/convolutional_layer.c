@@ -31,7 +31,7 @@ void binarize_weights(float *weights, int n, int size, float *binary)
     for(f = 0; f < n; ++f){
         float mean = 0;
         for(i = 0; i < size; ++i){
-            mean += fabs(weights[f*size + i]);
+            mean += fabsf(weights[f*size + i]);
         }
         mean = mean / size;
         for(i = 0; i < size; ++i){
@@ -40,7 +40,7 @@ void binarize_weights(float *weights, int n, int size, float *binary)
     }
 }
 
-void binarize_cpu(float *input, int n, float *binary)
+void binarize_cpu(const float *input, int n, float *binary)
 {
     int i;
     for(i = 0; i < n; ++i){
@@ -54,7 +54,7 @@ void binarize_input(float *input, int n, int size, float *binary)
     for(s = 0; s < size; ++s){
         float mean = 0;
         for(i = 0; i < n; ++i){
-            mean += fabs(input[i*size + s]);
+            mean += fabsf(input[i*size + s]);
         }
         mean = mean / n;
         for(i = 0; i < n; ++i){
@@ -202,7 +202,7 @@ convolutional_layer make_convolutional_layer(int batch, int h, int w, int c, int
     l.nbiases = n;
 
     // float scale = 1./sqrt(size*size*c);
-    float scale = sqrt(2./(size*size*c/l.groups));
+    float scale = sqrt(2./((float)size*size*c/l.groups));
     //printf("convscale %f\n", scale);
     //scale = .02;
     //for(i = 0; i < c*n*size*size; ++i) l.weights[i] = scale*rand_uniform(-1, 1);
@@ -408,7 +408,7 @@ void resize_convolutional_layer(convolutional_layer *l, int w, int h)
     l->workspace_size = get_workspace_size(*l);
 }
 
-void add_bias(float *output, float *biases, int batch, int n, int size)
+void add_bias(float *output, const float *biases, int batch, int n, int size)
 {
     int i,j,b;
     for(b = 0; b < batch; ++b){
@@ -420,7 +420,7 @@ void add_bias(float *output, float *biases, int batch, int n, int size)
     }
 }
 
-void scale_bias(float *output, float *scales, int batch, int n, int size)
+void scale_bias(float *output, const float *scales, int batch, int n, int size)
 {
     int i,j,b;
     for(b = 0; b < batch; ++b){
